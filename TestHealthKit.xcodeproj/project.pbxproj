@@ -16,6 +16,7 @@
 		AD2793572C4E519F0087BDFC /* TestHealthKitUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2793562C4E519F0087BDFC /* TestHealthKitUITestsLaunchTests.swift */; };
 		AD2793662C5252DF0087BDFC /* DataCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2793652C5252DF0087BDFC /* DataCollection.swift */; };
 		AD2793682C572D360087BDFC /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2793672C572D360087BDFC /* HealthData.swift */; };
+		AD8EB9DF2C59A9A700D96C14 /* HealthDataCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8EB9DE2C59A9A600D96C14 /* HealthDataCollection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		AD2793632C4E51D90087BDFC /* TestHealthKit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestHealthKit.entitlements; sourceTree = "<group>"; };
 		AD2793652C5252DF0087BDFC /* DataCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollection.swift; sourceTree = "<group>"; };
 		AD2793672C572D360087BDFC /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
+		AD8EB9DE2C59A9A600D96C14 /* HealthDataCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthDataCollection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 				AD2793392C4E519E0087BDFC /* TestHealthKitApp.swift */,
 				AD27933B2C4E519E0087BDFC /* ContentView.swift */,
 				AD2793652C5252DF0087BDFC /* DataCollection.swift */,
+				AD8EB9DE2C59A9A600D96C14 /* HealthDataCollection.swift */,
 				AD2793672C572D360087BDFC /* HealthData.swift */,
 				AD27933D2C4E519F0087BDFC /* Assets.xcassets */,
 				AD27933F2C4E519F0087BDFC /* Preview Content */,
@@ -269,6 +272,7 @@
 				AD27933C2C4E519E0087BDFC /* ContentView.swift in Sources */,
 				AD27933A2C4E519E0087BDFC /* TestHealthKitApp.swift in Sources */,
 				AD2793682C572D360087BDFC /* HealthData.swift in Sources */,
+				AD8EB9DF2C59A9A700D96C14 /* HealthDataCollection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

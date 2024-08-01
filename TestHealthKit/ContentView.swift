@@ -18,7 +18,6 @@ struct ContentView: View {
                     .font(.title)
                 
                 Button {
-                    //Code here before changing the bool value
                     let sharedTypes = Set(HealthData.shareDataTypes)
                     let readTypes = Set(HealthData.readDataTypes)
                     HealthData.requestHealthDataAccessIfNeeded(toShare: sharedTypes, read: readTypes) {success in
@@ -31,7 +30,7 @@ struct ContentView: View {
                 }
             }
             .navigationDestination(isPresented: $readyToNavigate) {
-                DataCollection()
+                HealthDataCollection()
             }
         }
     }
