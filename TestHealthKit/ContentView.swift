@@ -30,7 +30,7 @@ struct ContentView: View {
                 }
             }
             .navigationDestination(isPresented: $readyToNavigate) {
-                HealthDataCollection()
+                HealthDataTabView()
             }
         }
     }
