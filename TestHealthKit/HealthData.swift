@@ -309,7 +309,7 @@ class HealthData {
         // Enumerate over all the statistics objects between the start and end dates.
         statsCollection.enumerateStatistics(from: startDate, to: endDate)
         { (statistics, stop) in
-            print("stop:", stop.pointee)
+            //print("stop:", stop.pointee)
             var unitString:String
             var resultOrNil: HKQuantity?
             var value: Int
