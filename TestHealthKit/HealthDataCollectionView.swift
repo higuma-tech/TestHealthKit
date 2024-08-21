@@ -16,11 +16,24 @@ struct HealthDataCollectionView: View {
     @State var listTextDistanceWalkingRunning:[[String]] = []
     @State var listTextSixMinuteWalkTestDistance:[[String]] = []
     @State var listTextStepsDate:[String] = []
+    @State var showSheet:Bool = false
+    @State private var date:Date = Date()
+    @State private var inputInt:Int = 0
     
     let healthStore = HKHealthStore()
     let allTypes = Set([HKObjectType.quantityType(forIdentifier: .stepCount)!])
     
     var body: some View {
+        NavigationStack {
+            Button {
+                showSheet.toggle()
+            } label: {
+                Text("Add data")
+            }
+            .sheet(isPresented: $showSheet, content: {
+                InputCountSheet()
+            })
+            
             List {
                 Section(header:Text("Steps")) {
                     ForEach(listTextSteps, id: \.self) {item in
@@ -79,42 +92,62 @@ struct HealthDataCollectionView: View {
                     }
                 }
             }
-            /*
-            Button(action: {
-                HealthData.StatisticsCollectionQueryForHKQuantityTypeIdentifier(identifier: HKQuantityTypeIdentifier.stepCount) {collection in
-                    let textArray = HealthData.getStringArrayFromHKStatisticsCollection(identifier: HKQuantityTypeIdentifier.stepCount, collection: collection)
-                    
-                    DispatchQueue.main.async {
-                        self.listTextSteps = textArray
+            .navigationTitle("Health Data")
+            .navigationBarTitleDisplayMode(.inline)
+/*            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: addSteps) {
+                        Label("Add Item", systemImage: "plus")
                     }
                 }
-                
-                HealthData.StatisticsCollectionQueryForHKQuantityTypeIdentifier(identifier: HKQuantityTypeIdentifier.distanceWalkingRunning) {collection in
-                    let textArray = HealthData.getStringArrayFromHKStatisticsCollection(identifier: HKQuantityTypeIdentifier.distanceWalkingRunning, collection: collection)
-                    
-                    DispatchQueue.main.async {
-                        self.listTextDistanceWalkingRunning = textArray
-                    }
-                }
-                
-                HealthData.StatisticsCollectionQueryForHKQuantityTypeIdentifier(identifier: HKQuantityTypeIdentifier.sixMinuteWalkTestDistance) {collection in
-                    let textArray = HealthData.getStringArrayFromHKStatisticsCollection(identifier: HKQuantityTypeIdentifier.sixMinuteWalkTestDistance, collection: collection)
-                    
-                    DispatchQueue.main.async {
-                        self.listTextSixMinuteWalkTestDistance = textArray
-                    }
-                }
-                
-            }) {
-                Text("Update")
-            }
-            .frame(maxWidth: .infinity, minHeight:44.0)
-            .accentColor(Color.white)
-            .background(Color.blue.ignoresSafeArea(edges: .bottom))
-        */
+            } 
+ */
         }
+    }
+    
+    private func addSteps() {
+        withAnimation {
+        }
+    }
 }
 
+struct InputCountSheet: View {
+    @State private var date:Date = Date()
+    @State private var inputInt:Int = 0
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section(header: Text("Steps").font(.title)) {
+                    DatePicker ("Date", selection: $date, displayedComponents: .date)
+                    DatePicker ("Time", selection: $date, displayedComponents: .hourAndMinute)
+                    TextField("Step Count", value: $inputInt, format: .number)
+                }
+            }
+            .navigationTitle("Steps")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        print("cancel")
+                        dismiss()
+                    } label: {
+                        Text("cancel")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        print("add")
+                        dismiss()
+                    } label: {
+                        Text("add")
+                    }
+                }
+            }
+        }
+    }
+}
 
 #Preview {
     HealthDataCollectionView()
