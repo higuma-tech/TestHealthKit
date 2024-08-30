@@ -10,6 +10,7 @@ import HealthKit
 
 struct ContentView: View {
     @State private var readyToNavigate : Bool = false
+    let healthKitController = HealthKitController()
     
     var body: some View {
         NavigationStack {
@@ -18,11 +19,13 @@ struct ContentView: View {
                     .font(.title)
                 
                 Button {
-                    let sharedTypes = Set(HealthData.shareDataTypes)
-                    let readTypes = Set(HealthData.readDataTypes)
-                    HealthData.requestHealthDataAccessIfNeeded(toShare: sharedTypes, read: readTypes) {success in
-                        if success == true {
+                    let sharedTypes = Set(healthKitController.shareDataTypes)
+                    let readTypes = Set(healthKitController.readDataTypes)
+                    Task {
+                        let result = await healthKitController.requestHealthDataAccessIfNeeded(toShare: sharedTypes, read: readTypes)
+                        if result {
                             readyToNavigate = true
+                            print("HealthKit authorization is succeeded.")
                         }
                     }
                 } label: {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD12DE562C7D628200E78D7E /* HealthKitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD12DE552C7D628200E78D7E /* HealthKitController.swift */; };
 		AD27933A2C4E519E0087BDFC /* TestHealthKitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2793392C4E519E0087BDFC /* TestHealthKitApp.swift */; };
 		AD27933C2C4E519E0087BDFC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27933B2C4E519E0087BDFC /* ContentView.swift */; };
 		AD27933E2C4E519F0087BDFC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD27933D2C4E519F0087BDFC /* Assets.xcassets */; };
@@ -14,7 +15,6 @@
 		AD27934B2C4E519F0087BDFC /* TestHealthKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27934A2C4E519F0087BDFC /* TestHealthKitTests.swift */; };
 		AD2793552C4E519F0087BDFC /* TestHealthKitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2793542C4E519F0087BDFC /* TestHealthKitUITests.swift */; };
 		AD2793572C4E519F0087BDFC /* TestHealthKitUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2793562C4E519F0087BDFC /* TestHealthKitUITestsLaunchTests.swift */; };
-		AD2793682C572D360087BDFC /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2793672C572D360087BDFC /* HealthData.swift */; };
 		AD8EB9DF2C59A9A700D96C14 /* HealthDataCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8EB9DE2C59A9A600D96C14 /* HealthDataCollectionView.swift */; };
 		AD8EB9E12C5B864E00D96C14 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = AD8EB9E02C5B864E00D96C14 /* README.md */; };
 		AD8EB9E32C61C41A00D96C14 /* HealthDataTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8EB9E22C61C41A00D96C14 /* HealthDataTabView.swift */; };
@@ -39,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AD12DE552C7D628200E78D7E /* HealthKitController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitController.swift; sourceTree = "<group>"; };
 		AD2793362C4E519E0087BDFC /* TestHealthKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestHealthKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD2793392C4E519E0087BDFC /* TestHealthKitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHealthKitApp.swift; sourceTree = "<group>"; };
 		AD27933B2C4E519E0087BDFC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -50,7 +51,6 @@
 		AD2793542C4E519F0087BDFC /* TestHealthKitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHealthKitUITests.swift; sourceTree = "<group>"; };
 		AD2793562C4E519F0087BDFC /* TestHealthKitUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHealthKitUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		AD2793632C4E51D90087BDFC /* TestHealthKit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestHealthKit.entitlements; sourceTree = "<group>"; };
-		AD2793672C572D360087BDFC /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
 		AD8EB9DE2C59A9A600D96C14 /* HealthDataCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthDataCollectionView.swift; sourceTree = "<group>"; };
 		AD8EB9E02C5B864E00D96C14 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		AD8EB9E22C61C41A00D96C14 /* HealthDataTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataTabView.swift; sourceTree = "<group>"; };
@@ -112,7 +112,7 @@
 				AD8EB9E22C61C41A00D96C14 /* HealthDataTabView.swift */,
 				AD8EB9DE2C59A9A600D96C14 /* HealthDataCollectionView.swift */,
 				AD8EB9E62C61C48100D96C14 /* HealthDataChartView.swift */,
-				AD2793672C572D360087BDFC /* HealthData.swift */,
+				AD12DE552C7D628200E78D7E /* HealthKitController.swift */,
 				AD27933D2C4E519F0087BDFC /* Assets.xcassets */,
 				AD27933F2C4E519F0087BDFC /* Preview Content */,
 			);
@@ -277,8 +277,8 @@
 			files = (
 				AD8EB9E32C61C41A00D96C14 /* HealthDataTabView.swift in Sources */,
 				AD27933C2C4E519E0087BDFC /* ContentView.swift in Sources */,
+				AD12DE562C7D628200E78D7E /* HealthKitController.swift in Sources */,
 				AD27933A2C4E519E0087BDFC /* TestHealthKitApp.swift in Sources */,
-				AD2793682C572D360087BDFC /* HealthData.swift in Sources */,
 				AD8EB9DF2C59A9A700D96C14 /* HealthDataCollectionView.swift in Sources */,
 				AD8EB9E72C61C48100D96C14 /* HealthDataChartView.swift in Sources */,
 			);

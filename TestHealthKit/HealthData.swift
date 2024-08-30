@@ -8,12 +8,14 @@
 import Foundation
 import HealthKit
 
+/*
 struct HealthDataType: Identifiable {
     var day: String
     var value: Double
     var dayOfWeek: String
     var id = UUID()
 }
+*/
 
 class HealthData {
     
@@ -227,18 +229,17 @@ class HealthData {
         HealthData.healthStore.execute(query)
     }
     
+    // called by HeaalthDataChartView
     class func StatisticsCollectionQueryForHKQuantityTypeIdentifier(identifier:HKQuantityTypeIdentifier, operation:@escaping((_ collection:HKStatisticsCollection?)->Void)) -> Void {
         
         let calendar = Calendar.current
         let interval = DateComponents(day: 1)
         let components = DateComponents(calendar: calendar,
                                         timeZone: calendar.timeZone,
-                                        hour: 3,
+                                        hour: 0,
                                         minute: 0,
                                         second: 0,
-                                        weekday: 2)
-        
-        
+                                        weekday: 2)     // Monday at midnight
         guard let anchorDate = calendar.nextDate(after: Date(),
                                                  matching: components,
                                                  matchingPolicy: .nextTime,
@@ -302,7 +303,14 @@ class HealthData {
         
         let calendar = Calendar.current
         let now = Date()
-        let startDate = calendar.date(byAdding: .day, value: -6, to: now)!
+        
+        let components = calendar.dateComponents([.year, .month, .day], from: now)
+        guard let midnight = calendar.date(from: components) else {
+            fatalError("*** Unable to create the start date ***")
+        }
+        let startDate = calendar.date(byAdding: .day, value: -6, to: midnight)!
+        
+        let startDate_old = calendar.date(byAdding: .day, value: -6, to: now)!
         let endDate = now
         var itemArray:[[String]] = []
         
@@ -397,7 +405,14 @@ class HealthData {
         
         let calendar = Calendar.current
         let now = Date()
-        let startDate = calendar.date(byAdding: .day, value: -6, to: now)!
+
+        let components = calendar.dateComponents([.year, .month, .day], from: now)
+        guard let midnight = calendar.date(from: components) else {
+            fatalError("*** Unable to create the start date ***")
+        }
+        let startDate = calendar.date(byAdding: .day, value: -6, to: midnight)!
+
+//        let startDate = calendar.date(byAdding: .day, value: -6, to: now)!
         let endDate = now
         var healthData:HealthDataType = HealthDataType(day:"", value:0, dayOfWeek: "")
         var healthDataArray:[HealthDataType] = []
