@@ -12,10 +12,9 @@ struct HealthDataCollectionView: View {
     @State var labelTextSteps = "Shown here"
     @State var labelTextDistanceWalkingRunning = "Shown here"
     @State var labelTextSixMinuteWalkTestDistance = "Shown here"
-    @State var listTextSteps:[[String]] = []
-    @State var listTextDistanceWalkingRunning:[[String]] = []
-    @State var listTextSixMinuteWalkTestDistance:[[String]] = []
-    @State var listTextStepsDate:[String] = []
+    @State var listTextSteps:[HealthDataType] = []
+    @State var listTextDistanceWalkingRunning:[HealthDataType] = []
+    @State var listTextSixMinuteWalkTestDistance:[HealthDataType] = []
     @State var showSheet:Bool = false
     @State private var date:Date = Date()
     @State private var inputInt:Int = 0
@@ -39,16 +38,16 @@ struct HealthDataCollectionView: View {
                 Section(header:Text("Steps")) {
                     ForEach(listTextSteps, id: \.self) {item in
                         HStack {
-                            Text(item[0])   // steps
+                            Text(item.valueString)  // steps
                             Spacer()
-                            Text(item[1])   // date
+                            Text(item.dayString)  // date
                         }
                     }
                 }
                 .task {
                     let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
                     if let collection = collection {
-                        let textArray = healthKitController.getStringArrayFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
+                        let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
                         
                         await MainActor.run {
                             self.listTextSteps = textArray
@@ -59,16 +58,16 @@ struct HealthDataCollectionView: View {
                 Section(header:Text("distanceWalkingRunning")) {
                     ForEach(listTextDistanceWalkingRunning, id: \.self) {item in
                         HStack {
-                            Text(item[0])
+                            Text(item.valueString)
                             Spacer()
-                            Text(item[1])
+                            Text(item.dayString)
                         }
                     }
                 }
                 .task {
                     let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .distanceWalkingRunning)
                     if let collection = collection {
-                        let textArray = healthKitController.getStringArrayFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
+                        let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
                         
                         await MainActor.run {
                             self.listTextDistanceWalkingRunning = textArray
@@ -79,16 +78,16 @@ struct HealthDataCollectionView: View {
                 Section(header:Text("sixMinuteWalkTestDistance")) {
                     ForEach(listTextSixMinuteWalkTestDistance, id: \.self) {item in
                         HStack {
-                            Text(item[0])
+                            Text(item.valueString)
                             Spacer()
-                            Text(item[1])
+                            Text(item.dayString)
                         }
                     }
                 }
                 .task {
                     let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .sixMinuteWalkTestDistance)
                     if let collection = collection {
-                        let textArray = healthKitController.getStringArrayFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
+                        let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
                         
                         await MainActor.run {
                             self.listTextSixMinuteWalkTestDistance = textArray
@@ -98,14 +97,6 @@ struct HealthDataCollectionView: View {
             }
             .navigationTitle("Health Data")
             .navigationBarTitleDisplayMode(.inline)
-/*            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: addSteps) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            } 
- */
         }
     }
     
@@ -119,25 +110,27 @@ struct HealthDataCollectionView: View {
         Task {
             let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
             if let collection = collection {
-                let textArray = healthKitController.getStringArrayFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
+                let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
                 
-                await MainActor.run {
+               await MainActor.run {
                     self.listTextSteps = textArray
                 }
             }
         }
     }
-    
+
+/*
     private func updateTextsInView(forIdentifier identifier:HKQuantityTypeIdentifier, textArray: inout [[String]]) async {
         let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: identifier)
         if let collection = collection {
-            let tempTextArray = healthKitController.getStringArrayFromHKStatisticsCollection(identifier: identifier, collection: collection)
+            let tempTextArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: identifier, collection: collection)
             
             await MainActor.run {
-//               textArray = tempTextArray
+                self.textArray = tempTextArray
             }
         }
     }
+*/
 }
 
 struct InputCountSheet: View {

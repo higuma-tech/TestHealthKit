@@ -9,10 +9,11 @@ import Foundation
 import HealthKit
 import os
 
-struct HealthDataType: Identifiable {
-    var day: String
+struct HealthDataType: Identifiable, Hashable {
     var value: Double
-    var dayOfWeek: String
+    var valueString: String
+    var dayString: String
+    var dayOfWeekString: String
     var id = UUID()
 }
 
@@ -297,7 +298,7 @@ class HealthKitController {
         return dayOfWeek
     }
     
-    // called by HealthDataChartView 
+    // called by HealthDataChartView
     public func getValueAndDayFromHKStatisticsCollection(identifier:HKQuantityTypeIdentifier, collection: HKStatisticsCollection?) -> [HealthDataType] {
         
         guard let statsCollection = collection else {
@@ -317,7 +318,7 @@ class HealthKitController {
         let startDate = calendar.date(byAdding: .day, value: -6, to: midnight)!
  
         let endDate = now
-        var healthData:HealthDataType = HealthDataType(day:"", value:0, dayOfWeek: "")
+        var healthData:HealthDataType = HealthDataType(value:0, valueString:"", dayString:"", dayOfWeekString: "")
         var healthDataArray:[HealthDataType] = []
         
         // Enumerate over all the statistics objects between the start and end dates.
@@ -358,8 +359,99 @@ class HealthKitController {
             }
             
             healthData.value = value
-            healthData.day = self.getStartDateFromHKStatistics(statistics:statistics, style:.short)
-            healthData.dayOfWeek = self.getStartDayOfWeekFromHKStatistics(statistics:statistics)
+            healthData.dayString = self.getStartDateFromHKStatistics(statistics:statistics, style:.short)
+            healthData.dayOfWeekString = self.getStartDayOfWeekFromHKStatistics(statistics:statistics)
+            healthDataArray.append(healthData)
+        }
+        
+        return healthDataArray
+    }
+    
+    private func getUnitString(forIdentifier identifier:HKQuantityTypeIdentifier) -> String {
+        var unitString:String = ""
+        
+        switch identifier {
+        case .stepCount:
+            unitString = "steps"
+        case .distanceWalkingRunning:
+            unitString = "m"
+        case .sixMinuteWalkTestDistance:
+            unitString = "m"
+        default:
+            unitString = "count"
+        }
+        
+        return unitString
+    }
+    
+    private func getQuntityFromHKStatistics(forIdentifier identifier:HKQuantityTypeIdentifier, statistics:HKStatistics) -> Double {
+        var quantity: HKQuantity?
+        var value: Double
+        
+        switch identifier {
+        case .stepCount:
+            quantity = statistics.sumQuantity()
+            if let quantity = quantity {
+                value = quantity.doubleValue(for: HKUnit.count())
+            } else {
+                value = 0
+            }
+        case .distanceWalkingRunning:
+            quantity = statistics.sumQuantity()
+            if let quantity = quantity {
+                value = quantity.doubleValue(for: HKUnit.meter())
+            } else {
+                value = 0
+            }
+        case .sixMinuteWalkTestDistance:
+            quantity = statistics.averageQuantity()
+            if let quantity = quantity {
+                value = quantity.doubleValue(for: HKUnit.meter())
+            } else {
+                value = 0
+            }
+        default:
+            quantity = statistics.mostRecentQuantity()
+            if let quantity = quantity {
+                value = quantity.doubleValue(for: HKUnit.count())
+            } else {
+                value = 0
+            }
+        }
+        
+        return value
+    }
+    
+    public func getHealthDateFromHKStatisticsCollection(identifier:HKQuantityTypeIdentifier, collection: HKStatisticsCollection?) -> [HealthDataType] {
+        
+        guard let statsCollection = collection else {
+            // You should only hit this case if you have an unhandled error. Check for bugs
+            // in your code that creates the query, or explicitly handle the error.
+            assertionFailure("")
+            return []
+        }
+        
+        let calendar = Calendar.current
+        let now = Date()
+        
+        let components = calendar.dateComponents([.year, .month, .day], from: now)
+        guard let midnight = calendar.date(from: components) else {
+            fatalError("*** Unable to create the start date ***")
+        }
+        let startDate = calendar.date(byAdding: .day, value: -6, to: midnight)!
+ 
+        let endDate = now
+        var healthData:HealthDataType = HealthDataType(value:0, valueString:"", dayString:"", dayOfWeekString: "")
+        var healthDataArray:[HealthDataType] = []
+        
+        // Enumerate over all the statistics objects between the start and end dates.
+        statsCollection.enumerateStatistics(from: startDate, to: endDate)
+        { (statistics, stop) in
+            healthData.value = self.getQuntityFromHKStatistics(forIdentifier:identifier, statistics: statistics)
+            let unitString = self.getUnitString(forIdentifier:identifier)
+            healthData.valueString = String(Int(healthData.value)) + " " + unitString
+            healthData.dayString = self.getStartDateFromHKStatistics(statistics:statistics, style:.short)
+            healthData.dayOfWeekString = self.getStartDayOfWeekFromHKStatistics(statistics:statistics)
             healthDataArray.append(healthData)
         }
         
