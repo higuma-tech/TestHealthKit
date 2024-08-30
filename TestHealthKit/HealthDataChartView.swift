@@ -26,6 +26,7 @@ struct HealthDataChartView: View {
     @State var stepsData:[HealthDataType] = []
     @State var distanceWalkingRunningData:[HealthDataType] = []
     @State var sixMinuteWalkTestDistanceData:[HealthDataType] = []
+    let healthKitController = HealthKitController()
 
     var body: some View {
         VStack {
@@ -41,11 +42,12 @@ struct HealthDataChartView: View {
                     )
                 }
             }
-            .onAppear {
-                HealthData.StatisticsCollectionQueryForHKQuantityTypeIdentifier(identifier: HKQuantityTypeIdentifier.stepCount) {collection in
-                    let healthDataArray = HealthData.getValueAndDayFromHKStatisticsCollection(identifier: HKQuantityTypeIdentifier.stepCount, collection: collection)
+            .task {
+                let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
+                if let collection = collection {
+                    let healthDataArray = healthKitController.getValueAndDayFromHKStatisticsCollection(identifier: HKQuantityTypeIdentifier.stepCount, collection: collection)
                     
-                    DispatchQueue.main.async {
+                    await MainActor.run {
                         stepsData = healthDataArray
                     }
                 }
@@ -63,11 +65,12 @@ struct HealthDataChartView: View {
                     )
                 }
             }
-            .onAppear() {
-                HealthData.StatisticsCollectionQueryForHKQuantityTypeIdentifier(identifier: HKQuantityTypeIdentifier.distanceWalkingRunning) {collection in
-                    let healthDataArray = HealthData.getValueAndDayFromHKStatisticsCollection(identifier: HKQuantityTypeIdentifier.distanceWalkingRunning, collection: collection)
+            .task() {
+                let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .distanceWalkingRunning)
+                if let collection = collection {
+                    let healthDataArray = healthKitController.getValueAndDayFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
                     
-                    DispatchQueue.main.async {
+                    await MainActor.run {
                         distanceWalkingRunningData = healthDataArray
                     }
                 }
@@ -87,11 +90,12 @@ struct HealthDataChartView: View {
                     )
                 }
             }
-            .onAppear() {
-                HealthData.StatisticsCollectionQueryForHKQuantityTypeIdentifier(identifier: HKQuantityTypeIdentifier.sixMinuteWalkTestDistance) {collection in
-                    let healthDataArray = HealthData.getValueAndDayFromHKStatisticsCollection(identifier: HKQuantityTypeIdentifier.sixMinuteWalkTestDistance, collection: collection)
+            .task() {
+                let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .sixMinuteWalkTestDistance)
+                if let collection = collection {
+                    let healthDataArray = healthKitController.getValueAndDayFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
                     
-                    DispatchQueue.main.async {
+                    await MainActor.run {
                         sixMinuteWalkTestDistanceData = healthDataArray
                     }
                 }

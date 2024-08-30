@@ -20,6 +20,7 @@ struct HealthDataCollectionView: View {
     @State private var date:Date = Date()
     @State private var inputInt:Int = 0
     
+    let healthKitController = HealthKitController()
     let healthStore = HKHealthStore()
     let allTypes = Set([HKObjectType.quantityType(forIdentifier: .stepCount)!])
     
@@ -30,10 +31,10 @@ struct HealthDataCollectionView: View {
             } label: {
                 Text("Add data")
             }
-            .sheet(isPresented: $showSheet, content: {
+            .sheet(isPresented: $showSheet, onDismiss: didDismiss, content: {
                 InputCountSheet()
             })
-            
+                        
             List {
                 Section(header:Text("Steps")) {
                     ForEach(listTextSteps, id: \.self) {item in
@@ -44,11 +45,12 @@ struct HealthDataCollectionView: View {
                         }
                     }
                 }
-                .onAppear{
-                    HealthData.StatisticsCollectionQueryForHKQuantityTypeIdentifier(identifier: HKQuantityTypeIdentifier.stepCount) {collection in
-                        let textArray = HealthData.getStringArrayFromHKStatisticsCollection(identifier: HKQuantityTypeIdentifier.stepCount, collection: collection)
+                .task {
+                    let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
+                    if let collection = collection {
+                        let textArray = healthKitController.getStringArrayFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
                         
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.listTextSteps = textArray
                         }
                     }
@@ -63,11 +65,12 @@ struct HealthDataCollectionView: View {
                         }
                     }
                 }
-                .onAppear{
-                    HealthData.StatisticsCollectionQueryForHKQuantityTypeIdentifier(identifier: HKQuantityTypeIdentifier.distanceWalkingRunning) {collection in
-                        let textArray = HealthData.getStringArrayFromHKStatisticsCollection(identifier: HKQuantityTypeIdentifier.distanceWalkingRunning, collection: collection)
+                .task {
+                    let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .distanceWalkingRunning)
+                    if let collection = collection {
+                        let textArray = healthKitController.getStringArrayFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
                         
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.listTextDistanceWalkingRunning = textArray
                         }
                     }
@@ -82,11 +85,12 @@ struct HealthDataCollectionView: View {
                         }
                     }
                 }
-                .onAppear{
-                    HealthData.StatisticsCollectionQueryForHKQuantityTypeIdentifier(identifier: HKQuantityTypeIdentifier.sixMinuteWalkTestDistance) {collection in
-                        let textArray = HealthData.getStringArrayFromHKStatisticsCollection(identifier: HKQuantityTypeIdentifier.sixMinuteWalkTestDistance, collection: collection)
+                .task {
+                    let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .sixMinuteWalkTestDistance)
+                    if let collection = collection {
+                        let textArray = healthKitController.getStringArrayFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
                         
-                        DispatchQueue.main.async {
+                        await MainActor.run {
                             self.listTextSixMinuteWalkTestDistance = textArray
                         }
                     }
@@ -109,6 +113,31 @@ struct HealthDataCollectionView: View {
         withAnimation {
         }
     }
+    
+    // didDismiss is called when the sheet is dismissed. It fetches data in the HealthStore.
+    private func didDismiss() {
+        Task {
+            let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
+            if let collection = collection {
+                let textArray = healthKitController.getStringArrayFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
+                
+                await MainActor.run {
+                    self.listTextSteps = textArray
+                }
+            }
+        }
+    }
+    
+    private func updateTextsInView(forIdentifier identifier:HKQuantityTypeIdentifier, textArray: inout [[String]]) async {
+        let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: identifier)
+        if let collection = collection {
+            let tempTextArray = healthKitController.getStringArrayFromHKStatisticsCollection(identifier: identifier, collection: collection)
+            
+            await MainActor.run {
+//               textArray = tempTextArray
+            }
+        }
+    }
 }
 
 struct InputCountSheet: View {
@@ -120,6 +149,8 @@ struct InputCountSheet: View {
     @State private var valueSixMinuteWalkingDistance:Int = 0
     @Environment(\.dismiss) private var dismiss
 
+    let healthKitController = HealthKitController()
+    
     var body: some View {
         NavigationStack {
             List {
@@ -158,17 +189,21 @@ struct InputCountSheet: View {
             .navigationTitle("Manual Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                 ToolbarItem(placement: .topBarLeading) {
                     Button {
                         print("cancel")
                         dismiss()
                     } label: {
                         Text("cancel")
                     }
-                }
+                } 
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         print("add")
+                        Task {
+                            let _ = await healthKitController.setStepCountToHKStatictics(value: Double(valueSteps), date: dateSteps)
+                        }
                         dismiss()
                     } label: {
                         Text("add")
