@@ -47,7 +47,7 @@ struct HealthDataCollectionView: View {
                 .task {
                     let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
                     if let collection = collection {
-                        let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
+                        let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
                         
                         await MainActor.run {
                             self.listTextSteps = textArray
@@ -67,7 +67,7 @@ struct HealthDataCollectionView: View {
                 .task {
                     let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .distanceWalkingRunning)
                     if let collection = collection {
-                        let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
+                        let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
                         
                         await MainActor.run {
                             self.listTextDistanceWalkingRunning = textArray
@@ -87,7 +87,7 @@ struct HealthDataCollectionView: View {
                 .task {
                     let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .sixMinuteWalkTestDistance)
                     if let collection = collection {
-                        let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
+                        let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
                         
                         await MainActor.run {
                             self.listTextSixMinuteWalkTestDistance = textArray
@@ -110,7 +110,7 @@ struct HealthDataCollectionView: View {
         Task {
             let collectionStepCount = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
             if let collection = collectionStepCount {
-                let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
+                let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
                 
                 await MainActor.run {
                     self.listTextSteps = textArray
@@ -119,7 +119,7 @@ struct HealthDataCollectionView: View {
                 
             let collectionDistanceWalkingRunning = await healthKitController.QueryStatisticsCollection(forIdentifier: .distanceWalkingRunning)
             if let collection = collectionDistanceWalkingRunning {
-                let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
+                let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
                 
                 await MainActor.run {
                     self.listTextDistanceWalkingRunning = textArray
@@ -128,7 +128,7 @@ struct HealthDataCollectionView: View {
                 
             let collectionSixMinuteWalkTestDistance = await healthKitController.QueryStatisticsCollection(forIdentifier: .sixMinuteWalkTestDistance)
             if let collection = collectionSixMinuteWalkTestDistance {
-                let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
+                let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
                 
                 await MainActor.run {
                     self.listTextSixMinuteWalkTestDistance = textArray

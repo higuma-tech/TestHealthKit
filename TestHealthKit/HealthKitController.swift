@@ -17,7 +17,7 @@ struct HealthDataType: Identifiable, Hashable {
     var id = UUID()
 }
 
-class HealthKitController {
+actor HealthKitController {
     private let healthStore = HKHealthStore()
     private let isAvailable = HKHealthStore.isHealthDataAvailable()
     
@@ -100,15 +100,15 @@ class HealthKitController {
     
     // MARK: - Get
     
-    public var readDataTypes: [HKSampleType] {
-        return allHealthDataTypes
+    public func readDataTypes() -> [HKSampleType] {
+        return allHealthDataTypes()
     }
     
-    public var shareDataTypes: [HKSampleType] {
-        return allHealthDataTypes
+    public func shareDataTypes() -> [HKSampleType] {
+        return allHealthDataTypes()
     }
     
-    public var allHealthDataTypes: [HKSampleType] {
+    public func allHealthDataTypes() -> [HKSampleType] {
         let typeIdentifiers: [String] = [
             HKQuantityTypeIdentifier.stepCount.rawValue,
             HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue,
