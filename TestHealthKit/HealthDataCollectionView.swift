@@ -108,12 +108,30 @@ struct HealthDataCollectionView: View {
     // didDismiss is called when the sheet is dismissed. It fetches data in the HealthStore.
     private func didDismiss() {
         Task {
-            let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
-            if let collection = collection {
+            let collectionStepCount = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
+            if let collection = collectionStepCount {
                 let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
                 
-               await MainActor.run {
+                await MainActor.run {
                     self.listTextSteps = textArray
+                }
+            }
+                
+            let collectionDistanceWalkingRunning = await healthKitController.QueryStatisticsCollection(forIdentifier: .distanceWalkingRunning)
+            if let collection = collectionDistanceWalkingRunning {
+                let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
+                
+                await MainActor.run {
+                    self.listTextDistanceWalkingRunning = textArray
+                }
+            }
+                
+            let collectionSixMinuteWalkTestDistance = await healthKitController.QueryStatisticsCollection(forIdentifier: .sixMinuteWalkTestDistance)
+            if let collection = collectionSixMinuteWalkTestDistance {
+                let textArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
+                
+                await MainActor.run {
+                    self.listTextSixMinuteWalkTestDistance = textArray
                 }
             }
         }
@@ -139,7 +157,7 @@ struct InputCountSheet: View {
     @State private var dateDistanceWalkingRunning:Date = Date()
     @State private var valueDistanceWalkingRunning:Double = 0
     @State private var dateSixMinuteWalkingDistance:Date = Date()
-    @State private var valueSixMinuteWalkingDistance:Int = 0
+    @State private var valueSixMinuteWalkingDistance:Double = 0
     @Environment(\.dismiss) private var dismiss
 
     let healthKitController = HealthKitController()
@@ -195,7 +213,11 @@ struct InputCountSheet: View {
                     Button {
                         print("add")
                         Task {
-                            let _ = await healthKitController.setStepCountToHKStatictics(value: Double(valueSteps), date: dateSteps)
+                            let _ = await healthKitController.saveToHKStatistics(quantityTypeIdentifier:.stepCount, value: Double(valueSteps), date: dateSteps)
+                            
+                            let _ = await healthKitController.saveToHKStatistics(quantityTypeIdentifier: .distanceWalkingRunning, value: valueDistanceWalkingRunning, date: dateDistanceWalkingRunning)
+                            
+                            let _ = await healthKitController.saveToHKStatistics(quantityTypeIdentifier: .sixMinuteWalkTestDistance, value:valueSixMinuteWalkingDistance, date: dateSixMinuteWalkingDistance)
                         }
                         dismiss()
                     } label: {

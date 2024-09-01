@@ -197,6 +197,7 @@ class HealthKitController {
         }
     }
     
+    @available(*, deprecated, message: "Use getHealthDateFromHKStatisticsCollection() instead")
     public func getStringArrayFromHKStatisticsCollection(identifier:HKQuantityTypeIdentifier, collection: HKStatisticsCollection?) -> [[String]] {
         
         guard let statsCollection = collection else {
@@ -298,7 +299,7 @@ class HealthKitController {
         return dayOfWeek
     }
     
-    // called by HealthDataChartView
+    @available(*, deprecated, message: "Use getHealthDateFromHKStatisticsCollection() instead")
     public func getValueAndDayFromHKStatisticsCollection(identifier:HKQuantityTypeIdentifier, collection: HKStatisticsCollection?) -> [HealthDataType] {
         
         guard let statsCollection = collection else {
