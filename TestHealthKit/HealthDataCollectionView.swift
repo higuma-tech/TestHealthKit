@@ -33,7 +33,7 @@ struct HealthDataCollectionView: View {
             .sheet(isPresented: $showSheet, onDismiss: didDismiss, content: {
                 InputCountSheet()
             })
-                        
+            
             List {
                 Section(header:Text("Steps")) {
                     ForEach(listTextSteps, id: \.self) {item in
@@ -45,14 +45,7 @@ struct HealthDataCollectionView: View {
                     }
                 }
                 .task {
-                    let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
-                    if let collection = collection {
-                        let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
-                        
-                        await MainActor.run {
-                            self.listTextSteps = textArray
-                        }
-                    }
+                    await self.updateTextsInList(forIdentifier: .stepCount)
                 }
                 
                 Section(header:Text("distanceWalkingRunning")) {
@@ -65,14 +58,7 @@ struct HealthDataCollectionView: View {
                     }
                 }
                 .task {
-                    let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .distanceWalkingRunning)
-                    if let collection = collection {
-                        let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
-                        
-                        await MainActor.run {
-                            self.listTextDistanceWalkingRunning = textArray
-                        }
-                    }
+                    await self.updateTextsInList(forIdentifier: .distanceWalkingRunning)
                 }
                 
                 Section(header:Text("sixMinuteWalkTestDistance")) {
@@ -85,14 +71,7 @@ struct HealthDataCollectionView: View {
                     }
                 }
                 .task {
-                    let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .sixMinuteWalkTestDistance)
-                    if let collection = collection {
-                        let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
-                        
-                        await MainActor.run {
-                            self.listTextSixMinuteWalkTestDistance = textArray
-                        }
-                    }
+                    await self.updateTextsInList(forIdentifier: .sixMinuteWalkTestDistance)
                 }
             }
             .navigationTitle("Health Data")
@@ -100,55 +79,34 @@ struct HealthDataCollectionView: View {
         }
     }
     
-    private func addSteps() {
-        withAnimation {
-        }
-    }
-    
     // didDismiss is called when the sheet is dismissed. It fetches data in the HealthStore.
     private func didDismiss() {
         Task {
-            let collectionStepCount = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
-            if let collection = collectionStepCount {
-                let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
-                
-                await MainActor.run {
-                    self.listTextSteps = textArray
-                }
-            }
-                
-            let collectionDistanceWalkingRunning = await healthKitController.QueryStatisticsCollection(forIdentifier: .distanceWalkingRunning)
-            if let collection = collectionDistanceWalkingRunning {
-                let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
-                
-                await MainActor.run {
-                    self.listTextDistanceWalkingRunning = textArray
-                }
-            }
-                
-            let collectionSixMinuteWalkTestDistance = await healthKitController.QueryStatisticsCollection(forIdentifier: .sixMinuteWalkTestDistance)
-            if let collection = collectionSixMinuteWalkTestDistance {
-                let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
-                
-                await MainActor.run {
-                    self.listTextSixMinuteWalkTestDistance = textArray
-                }
-            }
+            await self.updateTextsInList(forIdentifier: .stepCount)
+            await self.updateTextsInList(forIdentifier: .distanceWalkingRunning)
+            await self.updateTextsInList(forIdentifier: .sixMinuteWalkTestDistance)
         }
     }
-
-/*
-    private func updateTextsInView(forIdentifier identifier:HKQuantityTypeIdentifier, textArray: inout [[String]]) async {
+    
+    private func updateTextsInList(forIdentifier identifier:HKQuantityTypeIdentifier) async {
         let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: identifier)
         if let collection = collection {
-            let tempTextArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: identifier, collection: collection)
+            let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: identifier, collection: collection)
             
             await MainActor.run {
-                self.textArray = tempTextArray
+                switch identifier {
+                case .stepCount:
+                    self.listTextSteps = textArray
+                case .distanceWalkingRunning:
+                    self.listTextDistanceWalkingRunning = textArray
+                case .sixMinuteWalkTestDistance:
+                    self.listTextSixMinuteWalkTestDistance = textArray
+                default:
+                    break
+                }
             }
         }
     }
-*/
 }
 
 struct InputCountSheet: View {
