@@ -19,9 +19,10 @@ struct ContentView: View {
                     .font(.title)
                 
                 Button {
-                    let sharedTypes = Set(healthKitController.shareDataTypes)
-                    let readTypes = Set(healthKitController.readDataTypes)
                     Task {
+                        let sharedTypes = Set(await healthKitController.shareDataTypes())
+                        let readTypes = Set(await healthKitController.readDataTypes())
+                    
                         let result = await healthKitController.requestHealthDataAccessIfNeeded(toShare: sharedTypes, read: readTypes)
                         if result {
                             readyToNavigate = true

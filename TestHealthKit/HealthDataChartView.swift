@@ -45,7 +45,7 @@ struct HealthDataChartView: View {
             .task {
                 let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .stepCount)
                 if let collection = collection {
-                    let healthDataArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
+                    let healthDataArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .stepCount, collection: collection)
                     
                     await MainActor.run {
                         stepsData = healthDataArray
@@ -68,7 +68,7 @@ struct HealthDataChartView: View {
             .task() {
                 let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .distanceWalkingRunning)
                 if let collection = collection {
-                    let healthDataArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
+                    let healthDataArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .distanceWalkingRunning, collection: collection)
                     
                     await MainActor.run {
                         distanceWalkingRunningData = healthDataArray
@@ -93,7 +93,7 @@ struct HealthDataChartView: View {
             .task() {
                 let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: .sixMinuteWalkTestDistance)
                 if let collection = collection {
-                    let healthDataArray = healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
+                    let healthDataArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: .sixMinuteWalkTestDistance, collection: collection)
                     
                     await MainActor.run {
                         sixMinuteWalkTestDistanceData = healthDataArray
