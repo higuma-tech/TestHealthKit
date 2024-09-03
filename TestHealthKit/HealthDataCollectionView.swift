@@ -45,7 +45,10 @@ struct HealthDataCollectionView: View {
                     }
                 }
                 .task {
-                    await self.updateTextsInList(forIdentifier: .stepCount)
+                    let listText = await self.updateTextsInList(forIdentifier: .stepCount)
+                    await MainActor.run {
+                        self.listTextSteps = listText
+                    }
                 }
                 
                 Section(header:Text("distanceWalkingRunning")) {
@@ -58,7 +61,10 @@ struct HealthDataCollectionView: View {
                     }
                 }
                 .task {
-                    await self.updateTextsInList(forIdentifier: .distanceWalkingRunning)
+                    let listText = await self.updateTextsInList(forIdentifier: .distanceWalkingRunning)
+                    await MainActor.run {
+                        self.listTextDistanceWalkingRunning = listText
+                    }
                 }
                 
                 Section(header:Text("sixMinuteWalkTestDistance")) {
@@ -71,7 +77,10 @@ struct HealthDataCollectionView: View {
                     }
                 }
                 .task {
-                    await self.updateTextsInList(forIdentifier: .sixMinuteWalkTestDistance)
+                    let listText = await self.updateTextsInList(forIdentifier: .sixMinuteWalkTestDistance)
+                    await MainActor.run {
+                        self.listTextSixMinuteWalkTestDistance = listText
+                    }
                 }
             }
             .navigationTitle("Health Data")
@@ -82,30 +91,25 @@ struct HealthDataCollectionView: View {
     // didDismiss is called when the sheet is dismissed. It fetches data in the HealthStore.
     private func didDismiss() {
         Task {
-            await self.updateTextsInList(forIdentifier: .stepCount)
-            await self.updateTextsInList(forIdentifier: .distanceWalkingRunning)
-            await self.updateTextsInList(forIdentifier: .sixMinuteWalkTestDistance)
+            let healthDataStepCount = await self.updateTextsInList(forIdentifier: .stepCount)
+            let healthDataDistanceWalkingRunning = await self.updateTextsInList(forIdentifier: .distanceWalkingRunning)
+            let healthDataSixMinuteWalkTestDistance = await self.updateTextsInList(forIdentifier: .sixMinuteWalkTestDistance)
+            
+            await MainActor.run {
+                self.listTextSteps = healthDataStepCount
+                self.listTextDistanceWalkingRunning = healthDataDistanceWalkingRunning
+                self.listTextSixMinuteWalkTestDistance = healthDataSixMinuteWalkTestDistance
+            }
         }
     }
     
-    private func updateTextsInList(forIdentifier identifier:HKQuantityTypeIdentifier) async {
+    private func updateTextsInList(forIdentifier identifier:HKQuantityTypeIdentifier) async -> [HealthDataType] {
+        var healthDataArray:[HealthDataType] = []
         let collection = await healthKitController.QueryStatisticsCollection(forIdentifier: identifier)
         if let collection = collection {
-            let textArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: identifier, collection: collection)
-            
-            await MainActor.run {
-                switch identifier {
-                case .stepCount:
-                    self.listTextSteps = textArray
-                case .distanceWalkingRunning:
-                    self.listTextDistanceWalkingRunning = textArray
-                case .sixMinuteWalkTestDistance:
-                    self.listTextSixMinuteWalkTestDistance = textArray
-                default:
-                    break
-                }
-            }
+            healthDataArray = await healthKitController.getHealthDateFromHKStatisticsCollection(identifier: identifier, collection: collection)
         }
+        return healthDataArray
     }
 }
 
