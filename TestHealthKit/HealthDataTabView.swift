@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HealthDataTabView: View {
-    @State var selection = 2
+    @State var selection = 1
     
     var body: some View {
         TabView(selection: $selection) {
@@ -18,6 +18,7 @@ struct HealthDataTabView: View {
                     Text("List")
                 }
             }
+            .tag(1)
             
             HealthDataChartView().tabItem {
                 VStack {
@@ -25,6 +26,7 @@ struct HealthDataTabView: View {
                     Text("Chart")
                 }
             }
+            .tag(2)
         }
     }
 }
