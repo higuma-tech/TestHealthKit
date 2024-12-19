@@ -7,26 +7,22 @@
 
 import SwiftUI
 
+enum Tabs: Equatable, Hashable {
+    case list
+    case chart
+}
+
 struct HealthDataTabView: View {
-    @State var selection = 1
+    @State var selection = Tabs.chart
     
     var body: some View {
         TabView(selection: $selection) {
-            HealthDataCollectionView().tabItem {
-                VStack {
-                    Image(systemName: "list.bullet")
-                    Text("List")
-                }
+            Tab("List", systemImage: "list.bullet", value: Tabs.list) {
+                HealthDataCollectionView()
             }
-            .tag(1)
-            
-            HealthDataChartView().tabItem {
-                VStack {
-                    Image(systemName: "chart.bar")
-                    Text("Chart")
-                }
+            Tab("Chart", systemImage: "chart.bar", value: Tabs.chart) {
+                HealthDataChartView()
             }
-            .tag(2)
         }
     }
 }
